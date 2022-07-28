@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block main %}
+    <table class="table table-bordered" id="profile-table">
+        <thead>
+            <tr>
+                <th class="text-middle">Add Cash</th>
+                <th class="text-middle">Change Password</th>
+                <th class="text-middle" id="status">Overall Performance: </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-middle">
+                    Seed Money: {{money}}
+                    <form action="/account" method="post">
+                        <input id = "cash" autocomplete="off" autofocus class="form-control mx-auto w-auto" name="cash" placeholder="Cash" type="number">
+                        <button class="btn btn-primary" type="submit">Add</button>
+                    </form>
+                </td>
+                <td class="text-middle">
+                    <form action="/account" method="post">
+                        <div class="mb-3">
+                            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="oldpassword" placeholder="Old Password" type="password">
+                        </div>
+                        <div class="mb-3">
+                            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="password" placeholder="New Password" type="password">
+                        </div>
+                        <div class="mb-3">
+                            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="confirmation" placeholder="Confirm password" type="password">
+                        </div>
+                        <button class="btn btn-primary" type="submit">Change</button>
+                    </form>
+                </td>
+                <th class="text-middle">
+                    <p>Seed money: {{money}}</p>
+                    <p>Total valuation: {{total}}</p>
+                    <p id="percent">Percent Change: {{change}}</p>
+                </th>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Helper function that parses string of format "Text +12.12%" into just number
+            function parsePercent(number){
+                let i = 0, found = false, count = 0;
+                while(!found){
+                    if(number[i] == " "){
+                        count++;
+                    }
+                    found = count == 2;
+                    i++;
+                }
+
+                number = number.substr(i);
+                console.log(number);
+                i = 0, found = false;
+                while(!found){
+                    found = number[i] == ".";
+                    i++;
+                }
+
+                return parseFloat(number.substring(0,i+5));
+            }
+
+            // Changes the color of the row of the table depending on whether it is at a profit or not
+            let percent = parsePercent(document.querySelector("#percent").innerHTML);
+
+            if(percent > 0){
+                document.querySelector("#status").innerHTML = "Overall Performance: 😊";
+                document.querySelector("#percent").style.color = "green";
+            }
+            else if(percent < 0){
+                document.querySelector("#status").innerHTML = "Overall Performance: 😭";
+                document.querySelector("#percent").style.color = "red";
+            }
+        })
+
+    </script>
+{% endblock %}

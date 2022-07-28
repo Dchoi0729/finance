@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Sell
+{% endblock %}
+
+{% block main %}
+    <form action="/sell" method="post">
+        <div class="mb-3">
+            <select id="symb" class="form-select mx-auto w-auto" name="symbol">
+                <option disabled="" selected="">Symbol</option>
+
+                {% for stock in stocklist %}
+                    <option value="{{stock}}">{{stock}}</option>
+                {% endfor %}
+
+            </select>
+        </div>
+        <div class="mb-3">
+            <input id="sell-shares" autocomplete="off" class="form-control mx-auto" name="shares" placeholder="Shares" min="0" type="number">
+        </div>
+        <button class="btn btn-primary" type="submit">Sell</button>
+    </form>
+
+    <script>
+
+        // AJAX script for capping max number of shares for different stocks
+        let input = document.querySelector("#symb");
+        let shares = document.querySelector("#sell-shares");
+
+        input.addEventListener('change', async function() {
+
+            // Reset input text
+            shares.value = "";
+
+            let response = await fetch("/selloption?stock=" + input.value);
+            let value = await response.json();
+
+            shares = document.querySelector("#sell-shares");
+            shares.max = value;
+        });
+
+    </script>
+{% endblock %}

@@ -1,0 +1,53 @@
+/* Size for brand */
+nav .navbar-brand
+{
+    font-size: xx-large;
+}
+
+/* Colors for brand */
+nav .navbar-brand .blue
+{
+    color: #537fbe;
+}
+nav .navbar-brand .red
+{
+    color: #ea433b;
+}
+nav .navbar-brand .yellow
+{
+    color: #f5b82e;
+}
+nav .navbar-brand .green
+{
+    color: #2e944b;
+}
+
+/* For shares input tag in sell.html*/
+#sell-shares{
+    width: 150px;
+}
+
+/* For input tag in each row in index.html*/
+.index-row-input{
+    display:inline-block;
+    margin-bottom: 5px;
+    width: 80px;
+}
+
+/* For input+button form in each row in index.html*/
+#index-row-button{
+    padding-left:0px;
+}
+
+
+/* For table in profile.html */
+#profile-table thead tr th{
+    width:33%;
+}
+
+#cash{
+    display:inline-block;
+    margin-bottom: 5px;
+    width: 80px;
+    margin-top: 30px;
+}

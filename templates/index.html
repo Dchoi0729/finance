@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Portfolio
+{% endblock %}
+
+{% block main %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th class="text-start">Symbol</th>
+                <th class="text-start">Name</th>
+                <th class="text-end">Shares</th>
+                <th class="text-end">Current Price</th>
+                <th class="text-end">TOTAL</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for stock in portfolio %}
+                <tr>
+                    <td class="text-start">{{ stock["symbol"] }}</td>
+                    <td class="text-start">{{ stock["name"] }}</td>
+                    <td class="text-end">{{ stock["shares"] }}</td>
+                    <td class="text-end">{{ stock["curr_price"] }}</td>
+                    <td id ="end" class="text-end">{{ stock["total_price"] }} {{ stock["percent_change"] }} </td>
+                    <td id ="index-row-button" class="text-end">
+                        <form action="/buy" method="post" onsubmit="submitForm(event);">
+                            <input type="hidden" name="symbol" value="{{ stock['symbol'] }}">
+                            <input class ="index-row-input" name="shares" placeholder="Shares" type="number" min="{{(-1)*stock['shares']}}">
+                            <button id="lastbtn" class="btn btn-primary" type="submit">Submit</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td class="border-0 fw-bold text-end" colspan="4">Cash</td>
+                <td class="border-0 text-end">{{cash}}</td>
+            </tr>
+            <tr>
+                <td class="border-0 fw-bold text-end" colspan="4">TOTAL</td>
+                <td class="border-0 text-end">{{ total }}</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script>
+
+        // Helper function that parses the TOTAL column into a double of just the percent change
+        function parsePercent(number){
+            let i = 0, found = false;
+            while(!found){
+                found = number[i] == " ";
+                i++;
+            }
+
+            number = number.substr(i+1);
+
+            i = 0, found = false;
+            while(!found){
+                found = number[i] == ".";
+                i++;
+            }
+
+            return parseFloat(number.substring(0,i+2));
+        }
+
+        // Changes the color of the row of the table depending on whether it is at a profit or not
+        let entries = document.querySelectorAll("#end")
+        for(let i = 0; i < entries.length; i++){
+            entry = entries[i];
+
+            if (parsePercent(entry.innerHTML) > 0){
+                entry.parentNode.style.background = "#90EE90";
+            }
+            else if (parsePercent(entry.innerHTML) < 0){
+                entry.parentNode.style.background = "#FFCCCB";
+            }
+        }
+
+
+        let inputs = document.querySelectorAll(".index-row-input");
+        for (let i = 0; i < inputs.length; i++){
+            input = inputs[i];
+
+            input.addEventListener("input", function(){
+                console.log(this.value);
+                if(this.value < 0){
+                    this.parentNode.action = "/sell";
+                }
+                else{
+                    this.parentNode.action = "/buy";
+                }
+            })
+        }
+
+        function submitForm(event){
+            if(event.srcElement.shares.value < 0){
+                event.srcElement.shares.value = -1*event.srcElement.shares.value;
+            }
+        }
+
+    </script>
+{% endblock %}
